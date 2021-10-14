@@ -1,0 +1,35 @@
+.container {
+  max-width: 900px;
+}
+
+//TABLE
+::ng-deep .mat-sort-header-container {
+  display: flex;
+  justify-content: center;
+}
+
+td,
+th {
+  text-align: center !important;
+}
+
+tr {
+  cursor: pointer;
+}
+
+td {
+  padding-right: 8px !important;
+}
+
+tr:hover {
+  cursor: pointer;
+  background-color: #2d2e33;
+}
+
+.mat-row {
+  min-height: 65px;
+
+  &.selected {
+    background: #2d2e33;
+  }
+}

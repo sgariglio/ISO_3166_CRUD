@@ -1,0 +1,82 @@
+::ng-deep .mat-drawer-inner-container {
+  overflow: hidden !important;
+}
+
+.main-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #eeeeee;
+}
+
+.company_identity {
+  .tittle {
+    font-family: 'Montserrat';
+    font-size: 26px;
+    color: #eeeeee;
+  }
+
+  .subtittle {
+    font-family: 'Montserrat';
+    font-size: 18px;
+    color: #eeeeee;
+  }
+}
+
+// LEFT SIDE MENU
+.sidenav {
+  //background-color: #548CA8; //Review this option for TSC
+  background-color: #53B8BB;
+  color: white;
+  max-width: 260px;
+
+  .logo {
+    margin-top: 20px;
+    margin-left: -15px;
+    max-width: 100px;
+  }
+
+  .access-link {
+    padding-top: 50px;
+    font-family: 'Montserrat';
+    font-size: 18px;
+    margin-left: 20px;
+
+    .access-link-item:hover {
+      font-size: 20px;
+      cursor: pointer;
+      transition: ease-in-out 0.1s;
+
+      .icon {
+        transform: scale(1.1);
+        transition: ease-in-out 0.1s;
+      }
+    }
+  }
+}
+
+//MENU CONTENT
+.sidenav-content {
+  .header {
+    background-color: #DBD9DB;
+    border-bottom: rgb(61, 61, 61) 2px solid;
+
+    .account {
+      cursor: pointer;
+    }
+
+    .badge {
+      font-weight: 300;
+    }
+  }
+}
+
+.menu {
+  font-family: 'Roboto';
+  font-size: 11px;
+  font-weight: bolder;
+  text-transform: uppercase;
+  color: #6C757D;
+}
