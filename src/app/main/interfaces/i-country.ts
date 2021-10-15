@@ -6,5 +6,5 @@ export interface ICountry {
   alpha2Code: string;
   numericCode: string;
 
-  divisions: ISubdivision[]
+  subdivisions: ISubdivision[]
 }

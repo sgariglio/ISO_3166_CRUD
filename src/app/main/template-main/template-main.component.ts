@@ -28,23 +28,27 @@ export class TemplateOperacionesComponent extends UIMain implements OnInit {
     this.setUserCaption()
   }
 
-  gotoHome() {
-    this._router.navigate(['/ihome'])
+  menuToggle() {
+
+  }
+
+  gotoAbout() {
+    this._router.navigate(['aboutThis'])
   }
 
   doLogout() {
     this.logOut()
-    this._router.navigate(['login'])
+    this._router.navigate([''])
   }
 
   //REDIRECTS
   gotoCountries() {
-    this._router.navigate(['alertsummary'])
+    this._router.navigate(['main'])
   }
 
   setUserCaption() {
     //No users for this TSC app.
-    this.usuarioCaption = "TSC"
+    this.usuarioCaption = "Sebastián Gariglio"
   }
 
 }

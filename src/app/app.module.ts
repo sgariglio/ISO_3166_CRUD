@@ -33,6 +33,8 @@ import { CountryBuildComponent } from './main/crud/country-list/country-build/co
 import { SubdivisionListComponent } from './main/crud/subdivision-list/subdivision-list.component';
 import { SubdivisionBuildComponent } from './main/crud/subdivision-list/subdivision-build/subdivision-build.component';
 import { LoginComponent } from './login/login.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { AboutThisComponent } from './main/about-this/about-this.component';
 
 
 @NgModule({
@@ -44,6 +46,7 @@ import { LoginComponent } from './login/login.component';
     SubdivisionListComponent,
     SubdivisionBuildComponent,
     LoginComponent,
+    AboutThisComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,8 @@ import { LoginComponent } from './login/login.component';
     MatMenuModule,
     MatSortModule,
     MatRadioModule,
-    MatListModule
+    MatListModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

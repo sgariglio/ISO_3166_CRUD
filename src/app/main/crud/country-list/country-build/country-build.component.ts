@@ -6,6 +6,7 @@ import { Country } from 'src/app/main/interfaces/classes/country';
 import { ICountry } from 'src/app/main/interfaces/i-country';
 import { ISubdivision } from 'src/app/main/interfaces/i-subdivision';
 import { UIMain } from 'src/app/main/template-main/class/ui-main';
+import { ApiCountryService } from 'src/app/services/api-country.service';
 import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 
@@ -26,7 +27,7 @@ export class CountryBuildComponent extends UIMain implements OnInit {
 
   mainFormGroup = new FormGroup({
     nameFormControl: new FormControl(Validators.required),
-    alphaCodeFormControl: new FormControl(Validators.required),
+    alphaCodeFormControl: new FormControl(Validators.pattern('[a-zA-Z0]*'), Validators.required),
     numericCodeFormControl: new FormControl(Validators.required),
   })
 
@@ -34,16 +35,13 @@ export class CountryBuildComponent extends UIMain implements OnInit {
   country = {} as ICountry
 
   //FLAGS
-  //deleted
   flagRequestDeleteScreen = false
   flagProviderWasDeleted = false
-  //sub screen
-  flagDivisionBuildRequest: boolean = false
-  flagDivisionOnlyView: boolean = false
-  //save
+  flagDivisionScreen: boolean = false
   flagSavedSuccess = false
 
   constructor(
+    private _apiCountry: ApiCountryService,
     _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
@@ -54,17 +52,14 @@ export class CountryBuildComponent extends UIMain implements OnInit {
   ngOnInit(): void {
     if (this.countryToEdit != undefined) {
       this.country = this.countryToEdit
-      this.patchValues()
+      this.fillFields()
     }
     if (this.onlyView) {
       this.mainFormGroup.disable()
     }
-
-    console.log(this.country.divisions);
-
   }
 
-  patchValues() {
+  fillFields() {
     this.mainFormGroup.controls['nameFormControl'].patchValue(this.country.name)
     this.mainFormGroup.controls['alphaCodeFormControl'].patchValue(this.country.alpha2Code)
     this.mainFormGroup.controls['numericCodeFormControl'].patchValue(this.country.numericCode)
@@ -82,50 +77,70 @@ export class CountryBuildComponent extends UIMain implements OnInit {
     let alphaCode = this.mainFormGroup.controls['alphaCodeFormControl'].value
     let numericCode = this.mainFormGroup.controls['numericCodeFormControl'].value
 
-    this.countryId = LocalStoreTools.randomId()
-    this.country = new Country(this.countryId, name, alphaCode, numericCode)
-    LocalStoreTools.saveList("countries", this.country)
+    this.country.name = name
+    this.country.alpha2Code = alphaCode
+    this.country.numericCode = numericCode
 
-    this.flagSavedSuccess = true
-    this.openSnackBar("Formulario guardado", "exito")
-
-    // this._api.usuariosAddUpdate(country).subscribe(res => {
-    //   if (res.exito) {
-    //     this.openSnackBar("Formulario guardado", "exito")
-    //     this.gotoBack()
-    //   } else {
-    //     this.openSnackBar(res.data, "ERROR")
-    //   }
-    // })
+    if (this.duplicatedValidation() == true) {
+      this.serverSave()
+    } else {
+      this.openSnackBar("Nombre o códigos ya ingresados", "ERROR")
+    }
   }
 
-  deleteThisProvider() {
+  serverSave() {
+    this._apiCountry.addUpdate(this.country).subscribe(res => {
+      if (res.success) {
+        this.flagSavedSuccess = true
+        this.openSnackBar("Formulario guardado", "exito")
+        this.gotoBack()
+      } else {
+        this.flagSavedSuccess = false
+        this.openSnackBar(res.data, "ERROR")
+      }
+    })
+  }
+
+  deleteRequest() {
     if (this.country.id == undefined) {
       return
     }
     if (this.country?.id < 1) {
       return
     }
-    // this._api.usuarioDelete(this.country.id).subscribe(res => {
-    //   if (res.exito) {
-    //     this.flagProviderWasDeleted = true
-    //   }
-    // })
+    this._apiCountry.delete(this.country.id).subscribe(res => {
+      if (res.success) {
+        this.flagProviderWasDeleted = true
+      }
+    })
   }
 
   //SUBDIVISION
-  gotoDivisionBuild() { this.flagDivisionBuildRequest = true }
+  gotoDivisionBuild() { this.flagDivisionScreen = true }
   divisionRequestClose(divisionsUpdated: ISubdivision[]) {
-    this.country.divisions = divisionsUpdated
-    this.flagDivisionBuildRequest = false
+    this.country.subdivisions = divisionsUpdated
+    this.flagDivisionScreen = false
   }
-  divisionView(division: ISubdivision) {
+  requestOpenDisivion(division: ISubdivision) {
+    console.log("llega");
     this.divisionReference = division
-    this.flagDivisionBuildRequest = true
+    this.flagDivisionScreen = true
   }
-  divisionEdit(division: ISubdivision) {
-    this.divisionReference = division
-    this.flagDivisionBuildRequest = true
+
+  //HELPER FUNCTIONS
+  duplicatedValidation(): boolean {
+    let response = true;
+    let duplicated: ICountry[]
+    if (this.country.id == 0) {
+      duplicated = this.countryList!.filter(f => (f.name.toLowerCase() == this.country.name.toLowerCase() || f.numericCode == this.country.numericCode || f.alpha2Code.toLowerCase() == this.country.alpha2Code.toLowerCase()))
+    } else {
+      duplicated = this.countryList!.filter(f => (f.name.toLowerCase() == this.country.name.toLowerCase() || f.numericCode == this.country.numericCode || f.alpha2Code.toLowerCase() == this.country.alpha2Code.toLowerCase()) && f.id != this.country.id)
+    }
+    if (!duplicated) { duplicated = [] }
+    if (duplicated.length > 0) {
+      response = false;
+    }
+    return response;
   }
 
   formReset() {
@@ -133,10 +148,10 @@ export class CountryBuildComponent extends UIMain implements OnInit {
     this.mainFormGroup.reset()
   }
 
-  //GOTO
-  gotoSubdivisiones() { }
   gotoBack() {
     this.requestCloseEvent.emit(true);
   }
 
 }
+
+

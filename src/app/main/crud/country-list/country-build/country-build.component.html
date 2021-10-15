@@ -1,5 +1,5 @@
 <form [formGroup]="mainFormGroup">
-  <div class="container  mt-3">
+  <div class="container  mt-3" *ngIf="!flagDivisionScreen">
     <!-- CARD MAIN -->
     <div class="card card-main mt-3">
       <div class="card-body">
@@ -20,12 +20,12 @@
             <mat-icon class="icon-back" (click)="gotoBack()">highlight_off</mat-icon>
           </div>
           <div class="col-12 tittle d-flex justify-content-center">
-            Pais {{this.mainFormGroup.controls['nameFormControl'].value}}
+            {{this.mainFormGroup.controls['nameFormControl'].value}}
           </div>
           <div class="col-12">
             <hr>
           </div>
-          <div class="col-12 d-flex justify-content-end">
+          <div class="col-12 d-flex justify-content-end" *ngIf="!onlyView">
             <button (click)="gotoDivisionBuild()" mat-raised-button color="primary">
               <mat-icon>add</mat-icon>
               <span>Agregar subdivisión</span>
@@ -33,9 +33,7 @@
           </div>
         </div>
 
-        <!-- CARD MAIN BODY -->
         <div class="row mt-3">
-
           <div class="col-12">
             <div class="card card-form">
               <div class="card-body">
@@ -66,73 +64,74 @@
               </div>
             </div>
           </div>
-          <!-- TABLE SUBDIVISION -->
-          <div class="row mt-1 p-0 m-0" *ngIf="country?.divisions!=undefined">
-            <div class="col-12">
-              <div class="card card-form">
-                <div class="card-body ">
-                  <div class="row">
-                    <div class="col-12">
-                      <app-subdivision-list [divisions]="country.divisions" (requestEdit)="divisionEdit($event)"
-                        (requestView)="divisionView($event)">
-                      </app-subdivision-list>
-                    </div>
+        </div>
+        <!-- TABLE SUBDIVISION -->
+        <div class="row mt-1  p-0 m-0 w-100"
+          *ngIf="country?.subdivisions!=undefined && country?.subdivisions!.length>0">
+          <div class="col-12  p-0 m-0">
+            <div class="card card-form">
+              <div class="card-body ">
+                <div class="row">
+                  <div class="col-12">
+                    <app-subdivision-list [onlyView]="onlyView" [divisions]="country.subdivisions"
+                      (requestOpenEvent)="requestOpenDisivion($event)">
+                    </app-subdivision-list>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- BUTTONS -->
-          <div class="row mt-3">
-            <!-- delete button -->
-            <div class="col-12 d-flex justify-content-between"
-              *ngIf="!onlyView && flagRequestDeleteScreen && !flagProviderWasDeleted">
-              <button (click)="deleteThisProvider()" color="accent" mat-raised-button class="btn btn-danger">
-                <mat-icon>delete</mat-icon>
-                Eliminar
-              </button>
-              <button (click)="flagRequestDeleteScreen=false" color="primary" mat-raised-button class="btn-secondary">
-                <mat-icon>cancel</mat-icon>
-                Cancelar
-              </button>
-            </div>
-            <div class="col-12 mt-3 d-flex justify-content-center" *ngIf="flagProviderWasDeleted">
-              <span class="alert alert-danger text-center w-100"><strong>El usuario fue eliminado.</strong>
-              </span>
-            </div>
-            <!-- save button -->
-            <div class="col-12 d-flex justify-content-end"
-              *ngIf="!onlyView && !flagRequestDeleteScreen && !flagProviderWasDeleted">
-              <button (click)="save()" mat-raised-button class="btn">
-                <mat-icon>save</mat-icon>
-                Guardar
-              </button>
-            </div>
-            <div class="col-12 d-flex justify-content-end mt-1" *ngIf="!onlyView">
-              <span class="text-danger" *ngIf="!this.mainFormGroup.valid">completar los campos</span>
-              <span class="text-success" *ngIf="this.mainFormGroup.valid">formulario valido</span>
-            </div>
-            <!-- saved success buttons options -->
-            <div class="col-12 d-flex justify-content-end" *ngIf="flagSavedSuccess">
-              <div class="row">
-                <div class="col-12 d-flex justify-content-end align-items-center">
-                  <button (click)="gotoBack()" mat-raised-button class="btn">
-                    <mat-icon>save</mat-icon>
-                    Volver
-                  </button>
-                </div>
-                <div class="col-12 d-flex justify-content-end align-items-center">
-                  <button (click)="formReset()" mat-raised-button class="btn">
-                    <mat-icon>save</mat-icon>
-                    Nuevo pais
-                  </button>
-                </div>
-                <div class="col-12 d-flex justify-content-end align-items-center">
-                  <button (click)="gotoSubdivisiones()" mat-raised-button class="btn">
-                    <mat-icon>save</mat-icon>
-                    Ir a subdivisiones
-                  </button>
-                </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row mt-3">
+          <!-- delete button -->
+          <div class="col-12 d-flex justify-content-between"
+            *ngIf="!onlyView && flagRequestDeleteScreen && !flagProviderWasDeleted">
+            <button (click)="deleteRequest()" color="accent" mat-raised-button class="btn btn-danger">
+              <mat-icon>delete</mat-icon>
+              Eliminar
+            </button>
+            <button (click)="flagRequestDeleteScreen=false" color="primary" mat-raised-button class="btn-secondary">
+              <mat-icon>cancel</mat-icon>
+              Cancelar
+            </button>
+          </div>
+          <div class="col-12 mt-3 d-flex justify-content-center" *ngIf="flagProviderWasDeleted">
+            <span class="alert alert-danger text-center w-100"><strong>El pais fue eliminado.</strong>
+            </span>
+          </div>
+          <!-- save button -->
+          <div class="col-12 d-flex justify-content-end"
+            *ngIf="!onlyView && !flagRequestDeleteScreen && !flagProviderWasDeleted">
+            <button (click)="save()" mat-raised-button class="btn">
+              <mat-icon>save</mat-icon>
+              Guardar
+            </button>
+          </div>
+          <div class="col-12 d-flex justify-content-end mt-1" *ngIf="!onlyView">
+            <span class="text-danger" *ngIf="!this.mainFormGroup.valid">completar los campos</span>
+          </div>
+          <!-- saved success buttons options -->
+          <div class="col-12 d-flex justify-content-end" *ngIf="flagSavedSuccess">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-end align-items-center">
+                <button (click)="gotoBack()" mat-raised-button class="btn">
+                  <mat-icon>save</mat-icon>
+                  Volver
+                </button>
+              </div>
+              <div class="col-12 d-flex justify-content-end align-items-center">
+                <button (click)="formReset()" mat-raised-button class="btn">
+                  <mat-icon>save</mat-icon>
+                  Nuevo pais
+                </button>
+              </div>
+              <div class="col-12 d-flex justify-content-end align-items-center">
+                <button mat-raised-button class="btn">
+                  <mat-icon>save</mat-icon>
+                  Ir a subdivisiones
+                </button>
               </div>
             </div>
           </div>
@@ -144,10 +143,10 @@
 
 
 <!-- SUBDIVISION -->
-<div class="row" *ngIf="flagDivisionBuildRequest">
+<div class="row" *ngIf="flagDivisionScreen">
   <div class="col-12">
-    <app-subdivision-build (requestCloseEvent)="divisionRequestClose($event)" [onlyView]="flagDivisionOnlyView"
-      [divisionToEdit]="divisionReference" [divisions]="country.divisions">
+    <app-subdivision-build [onlyView]="onlyView" (requestCloseEvent)="divisionRequestClose($event)"
+      [divisionToEdit]="divisionReference" [divisions]="country.subdivisions" [countryReferenceId]="country.id">
     </app-subdivision-build>
   </div>
 </div>

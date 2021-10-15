@@ -14,9 +14,13 @@
       <div class="col-12">
         <hr>
       </div>
+      <div (click)="gotoAbout()" class="col-12 mt-3 d-flex justify-content-start align-items-center access-link-item">
+        <mat-icon class="me-2 icon">outlined_flag</mat-icon>
+        <span style="line-height: 32px;">Acerca de...</span>
+      </div>
       <div (click)="gotoCountries()"
         class="col-12 mt-3 d-flex justify-content-start align-items-center access-link-item">
-        <mat-icon class="me-3 icon">outlined_flag</mat-icon>
+        <mat-icon class="me-2 icon">outlined_flag</mat-icon>
         <span style="line-height: 32px;">Lista de Paises</span>
       </div>
     </div>
@@ -25,9 +29,14 @@
 
   <!-- CONTENT -->
   <div class="sidenav-content">
-    <mat-toolbar class="header d-flex justify-content-end align-items-center">
-      <div class="row account">
-        <div class="col-12">
+    <mat-toolbar class="header">
+      <div class="row account w-100">
+        <div class="col-6  d-flex justify-content-start align-items-center">
+          <span (click)="drawer.toggle()" class="d-flex justify-content-start align-items-center">
+            <mat-icon style="color: darkgrey;">menu</mat-icon>
+          </span>
+        </div>
+        <div class="col-6  d-flex justify-content-end align-items-center">
           <span [matMenuTriggerFor]="loginMenu"
             class="badge rounded-pill  bg-secondary d-flex justify-content-center align-items-center">
             <mat-icon style="color: white;">arrow_drop_down</mat-icon>

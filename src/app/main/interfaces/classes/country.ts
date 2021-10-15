@@ -7,7 +7,7 @@ export class Country implements ICountry {
   alpha2Code: string;
   numericCode: string;
 
-  divisions: ISubdivision[] = [];
+  subdivisions: ISubdivision[] = [];
 
   constructor(
     id: number,

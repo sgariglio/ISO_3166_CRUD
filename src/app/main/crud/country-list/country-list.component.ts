@@ -1,9 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { ApiCountryService } from 'src/app/services/api-country.service';
 import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 import { Country } from '../../interfaces/classes/country';
@@ -18,6 +20,7 @@ import { UIMain } from '../../template-main/class/ui-main';
 export class CountryListComponent extends UIMain implements OnInit, AfterViewInit {
 
   //TABLE
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
   displayedColumns: string[] = ['name', 'alpha2Code', 'numericCode', 'actions'];
   dataSourceItems: MatTableDataSource<ICountry> = new MatTableDataSource;
@@ -30,7 +33,9 @@ export class CountryListComponent extends UIMain implements OnInit, AfterViewIni
   ngSearch = ""
   countries: ICountry[] = [];
 
+
   constructor(
+    private _apiCountry: ApiCountryService,
     _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
@@ -40,27 +45,21 @@ export class CountryListComponent extends UIMain implements OnInit, AfterViewIni
 
   ngAfterViewInit() {
     this.dataSourceItems.sort = this.sort!;
+    this.dataSourceItems.paginator = this.paginator!;
   }
   ngOnInit(): void {
     this.userLoggedCheck()
     this.tableLoad()
-
-    this.countryEdit = this.countries[0]
-    this.selection.toggle(this.countryEdit);
-    this.onlyView = false
   }
 
   tableLoad() {
-    this.countries = LocalStoreTools.readList("countries", Country)
-    this.dataSourceItems.data = this.countries;
-
-    // this._apICountry.getClientList(this.ownerId).subscribe(res => {
-    //   if (res.exito) {
-    //     this.clientes = res.data
-    //     this.dataSourceItems.data = this.clientes;
-    //     this.searchChange()
-    //   }
-    // })
+    this._apiCountry.countries().subscribe(res => {
+      if (res.success) {
+        this.countries = res.data
+        this.dataSourceItems.data = this.countries;
+        this.searchChange()
+      }
+    })
   }
 
 
@@ -93,7 +92,7 @@ export class CountryListComponent extends UIMain implements OnInit, AfterViewIni
       ||
       f.alpha2Code.toLowerCase().indexOf(this.ngSearch) >= 0
       ||
-      f.numericCode.toLowerCase().indexOf(this.ngSearch) >= 0
+      f.numericCode.toString().indexOf(this.ngSearch) >= 0
     ))
   }
 

@@ -6,16 +6,6 @@ import { ApiLoginService } from "src/app/services/api-login.service";
 
 export class UIMain {
 
-  /*
- constructor(
-    _apiLogin:ApiLoginService,
-    public router: Router,
-    _snackBar: MatSnackBar,
-  ) {
-    super(_apiLogin,router, _snackBar)
-  }
-  */
-
   constructor(
     private _login: ApiLoginService,
     public _router: Router,
@@ -29,8 +19,6 @@ export class UIMain {
   userLoggedCheck() {
     if (this.getLoggedUser()?.token == null) {
       this._router.navigate([""])
-    } else {
-      this._router.navigate(["main"])
     }
   }
 

@@ -7,11 +7,8 @@ export abstract class Server_Config {
   public static runningOnProd = false
 
   //PROD
-  // public static urlApi: string = 'https://server.browell.ar/ndp';
-  // public static urlApiSeguridad: string = 'https://server.browell.ar/web_api_seguridad';
-  // public static runningOnProd = true
+  //public static urlApi: string = 'https://server.browell.ar/tsc';
+  //public static runningOnProd = true
 
-
-  //TEST MODE (NO PROD)
-  // if (!Server_Config.runningOnProd) {
+  //public static urlApi: string = 'https://server.lockbell.com.ar/tsc';
 }

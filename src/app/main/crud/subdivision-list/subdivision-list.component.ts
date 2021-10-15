@@ -5,9 +5,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ApiLoginService } from 'src/app/services/api-login.service';
-import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
-import { Country } from '../../interfaces/classes/country';
-import { ICountry } from '../../interfaces/i-country';
 import { ISubdivision } from '../../interfaces/i-subdivision';
 import { UIMain } from '../../template-main/class/ui-main';
 
@@ -18,9 +15,9 @@ import { UIMain } from '../../template-main/class/ui-main';
 })
 export class SubdivisionListComponent extends UIMain implements OnInit, OnChanges {
 
+  @Input() onlyView = false
   @Input() divisions?: ISubdivision[] = []
-  @Output() requestEdit = new EventEmitter<ISubdivision>();
-  @Output() requestView = new EventEmitter<ISubdivision>();
+  @Output() requestOpenEvent = new EventEmitter<ISubdivision>();
 
   //TABLE
   @ViewChild(MatSort) sort: MatSort | undefined;
@@ -30,7 +27,6 @@ export class SubdivisionListComponent extends UIMain implements OnInit, OnChange
 
   divisionEdit?= {} as ISubdivision
   requestNewProvider = false
-  onlyView = true
 
   ngSearch = ""
   countries: ISubdivision[] = [];
@@ -43,8 +39,6 @@ export class SubdivisionListComponent extends UIMain implements OnInit, OnChange
     super(_apiLogin, router, _snackBar)
   }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.divisions);
-
     if (this.divisions) {
       this.dataSourceItems.data = this.divisions
     } else {
@@ -59,31 +53,15 @@ export class SubdivisionListComponent extends UIMain implements OnInit, OnChange
 
   }
 
-  // tableLoad() {
-  //   this.countries = LocalStoreTools.readList("subdivision", Country)
-  //   this.dataSourceItems.data = this.countries;
-  //   // this._apISubdivision.getClientList(this.ownerId).subscribe(res => {
-  //   //   if (res.exito) {
-  //   //     this.clientes = res.data
-  //   //     this.dataSourceItems.data = this.clientes;
-  //   //     this.searchChange()
-  //   //   }
-  //   // })
-  // }
-
-
   getRecord(division: ISubdivision) {
     this.selection.toggle(division);
     this.divisionEdit = division
   }
 
-  edit(division: ISubdivision) {
-    this.requestEdit.emit(division)
+  requestOpen(division: ISubdivision) {
+    this.requestOpenEvent.emit(division)
   }
 
-  view(division: ISubdivision) {
-    this.requestEdit.emit(division)
-  }
 
   goto_New() {
     this.onlyView = false
@@ -107,7 +85,5 @@ export class SubdivisionListComponent extends UIMain implements OnInit, OnChange
     this._router.navigate(['lavado'])
   }
 }
-function Ouput() {
-  throw new Error('Function not implemented.');
-}
+
 
