@@ -1,5 +1,5 @@
 export interface WSResponse {
-  exito: boolean;
-  mensaje: string;
+  success: boolean;
+  message: string;
   data: any;
 }

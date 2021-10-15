@@ -25,7 +25,7 @@
           <div class="col-12">
             <hr>
           </div>
-          <div class="col-12 d-flex justify-content-end" *ngIf="countryToEdit?.id!=undefined && !onlyView">
+          <div class="col-12 d-flex justify-content-end">
             <button (click)="gotoDivisionBuild()" mat-raised-button color="primary">
               <mat-icon>add</mat-icon>
               <span>Agregar subdivisión</span>
@@ -61,6 +61,22 @@
                         oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                         placeholder="Ej: 320" maxlength="3" formControlName="numericCodeFormControl" required>
                     </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- TABLE SUBDIVISION -->
+          <div class="row mt-1 p-0 m-0" *ngIf="country?.divisions!=undefined">
+            <div class="col-12">
+              <div class="card card-form">
+                <div class="card-body ">
+                  <div class="row">
+                    <div class="col-12">
+                      <app-subdivision-list [divisions]="country.divisions" (requestEdit)="divisionEdit($event)"
+                        (requestView)="divisionView($event)">
+                      </app-subdivision-list>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -130,7 +146,8 @@
 <!-- SUBDIVISION -->
 <div class="row" *ngIf="flagDivisionBuildRequest">
   <div class="col-12">
-    <app-subdivision-build (requestCloseEvent)="divisionRequestClose()" [countryReference]="country">
+    <app-subdivision-build (requestCloseEvent)="divisionRequestClose($event)" [onlyView]="flagDivisionOnlyView"
+      [divisionToEdit]="divisionReference" [divisions]="country.divisions">
     </app-subdivision-build>
   </div>
 </div>

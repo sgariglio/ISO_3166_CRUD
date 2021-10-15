@@ -1,11 +1,13 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 import { Country } from '../../interfaces/classes/country';
+import { ICountry } from '../../interfaces/i-country';
 import { ISubdivision } from '../../interfaces/i-subdivision';
 import { UIMain } from '../../template-main/class/ui-main';
 
@@ -14,15 +16,19 @@ import { UIMain } from '../../template-main/class/ui-main';
   templateUrl: './subdivision-list.component.html',
   styleUrls: ['./subdivision-list.component.scss']
 })
-export class SubdivisionListComponent extends UIMain implements OnInit {
+export class SubdivisionListComponent extends UIMain implements OnInit, OnChanges {
+
+  @Input() divisions?: ISubdivision[] = []
+  @Output() requestEdit = new EventEmitter<ISubdivision>();
+  @Output() requestView = new EventEmitter<ISubdivision>();
 
   //TABLE
   @ViewChild(MatSort) sort: MatSort | undefined;
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name', 'actions'];
   dataSourceItems: MatTableDataSource<ISubdivision> = new MatTableDataSource;
   selection = new SelectionModel<ISubdivision>(false, []);
 
-  countryEdit?= {} as ISubdivision
+  divisionEdit?= {} as ISubdivision
   requestNewProvider = false
   onlyView = true
 
@@ -30,47 +36,53 @@ export class SubdivisionListComponent extends UIMain implements OnInit {
   countries: ISubdivision[] = [];
 
   constructor(
+    _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
   ) {
-    super(router, _snackBar)
+    super(_apiLogin, router, _snackBar)
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.divisions);
+
+    if (this.divisions) {
+      this.dataSourceItems.data = this.divisions
+    } else {
+      this.dataSourceItems.data = []
+    }
   }
 
   ngAfterViewInit() {
     this.dataSourceItems.sort = this.sort!;
   }
   ngOnInit(): void {
-    this.tableLoad()
+
   }
 
-  tableLoad() {
-    this.countries = LocalStoreTools.readList("countries", Country)
-    this.dataSourceItems.data = this.countries;
-    // this._apISubdivision.getClientList(this.ownerId).subscribe(res => {
-    //   if (res.exito) {
-    //     this.clientes = res.data
-    //     this.dataSourceItems.data = this.clientes;
-    //     this.searchChange()
-    //   }
-    // })
+  // tableLoad() {
+  //   this.countries = LocalStoreTools.readList("subdivision", Country)
+  //   this.dataSourceItems.data = this.countries;
+  //   // this._apISubdivision.getClientList(this.ownerId).subscribe(res => {
+  //   //   if (res.exito) {
+  //   //     this.clientes = res.data
+  //   //     this.dataSourceItems.data = this.clientes;
+  //   //     this.searchChange()
+  //   //   }
+  //   // })
+  // }
+
+
+  getRecord(division: ISubdivision) {
+    this.selection.toggle(division);
+    this.divisionEdit = division
   }
 
-
-  getRecord(country: ISubdivision) {
-    this.selection.toggle(country);
-    this.countryEdit = country
+  edit(division: ISubdivision) {
+    this.requestEdit.emit(division)
   }
 
-  edit(country: ISubdivision) {
-    this.selection.toggle(country);
-    this.countryEdit = country
-    this.onlyView = false
-  }
-
-  view(country: ISubdivision) {
-    this.selection.toggle(country);
-    this.countryEdit = country
-    this.onlyView = true
+  view(division: ISubdivision) {
+    this.requestEdit.emit(division)
   }
 
   goto_New() {
@@ -86,13 +98,16 @@ export class SubdivisionListComponent extends UIMain implements OnInit {
   }
 
   requestCloseChild() {
-    this.countryEdit = {} as ISubdivision
+    this.divisionEdit = {} as ISubdivision
     this.selection.clear()
     this.requestNewProvider = false
-    this.tableLoad()
   }
 
   gotoBack() {
     this._router.navigate(['lavado'])
   }
 }
+function Ouput() {
+  throw new Error('Function not implemented.');
+}
+

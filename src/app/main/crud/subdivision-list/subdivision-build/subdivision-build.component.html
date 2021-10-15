@@ -7,20 +7,20 @@
         <div class="row">
           <div class="col-12 d-flex justify-content-between">
             <span>
-              <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="divisionToEdit?.id!=undefined">
+              <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="divisionToEdit!=undefined">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="flagRequestDeleteScreen=!flagRequestDeleteScreen">
                   <mat-icon class="m-1">delete</mat-icon>
-                  <span class="matMenu">Eliminar pais</span>
+                  <span class="matMenu">Eliminar subdivisión</span>
                 </button>
               </mat-menu>
             </span>
             <mat-icon class="icon-back" (click)="gotoBack()">highlight_off</mat-icon>
           </div>
-          <div class="col-12 tittle d-flex justify-content-center">
-            Subdivisión {{this.mainFormGroup.controls['nameFormControl'].value}}
+          <div class="col-12 tittle d-flex justify-content-center align-items-center">
+            <span class="ms-1">{{this.mainFormGroup.controls['nameFormControl'].value}}</span>
           </div>
           <div class="col-12">
             <hr>
@@ -43,21 +43,21 @@
                     <mat-form-field class="w-100">
                       <mat-label>Historia</mat-label>
                       <textarea matInput type='text' placeholder="describa..." [maxlength]="150"
-                        formControlName="historyCodeFormControl" pattern="[a-zA-Z ]*"></textarea>
+                        formControlName="historyFormControl" [rows]="3"></textarea>
                     </mat-form-field>
                   </div>
                   <div class="col-12">
                     <mat-form-field class="w-100">
                       <mat-label>Geografia</mat-label>
                       <textarea matInput type='text' placeholder="describa..." [maxlength]="150"
-                        formControlName="geographyCodeFormControl"></textarea>
+                        formControlName="geographyFormControl" [rows]="3"></textarea>
                     </mat-form-field>
                   </div>
                   <div class="col-12">
                     <mat-form-field class="w-100">
                       <mat-label>Otro</mat-label>
                       <textarea matInput type='text' placeholder="describa..." [maxlength]="150"
-                        formControlName="otherCodeFormControl"></textarea>
+                        formControlName="otherFormControl" [rows]="3"></textarea>
                     </mat-form-field>
                   </div>
                 </div>
@@ -69,7 +69,7 @@
             <!-- delete button -->
             <div class="col-12 d-flex justify-content-between"
               *ngIf="!onlyView && flagRequestDeleteScreen && !flagProviderWasDeleted">
-              <button (click)="deleteThisProvider()" color="accent" mat-raised-button class="btn btn-danger">
+              <button (click)="deleteDivision()" color="accent" mat-raised-button class="btn btn-danger">
                 <mat-icon>delete</mat-icon>
                 Eliminar
               </button>
@@ -77,6 +77,10 @@
                 <mat-icon>cancel</mat-icon>
                 Cancelar
               </button>
+            </div>
+            <div class="col-12 mt-3 d-flex justify-content-center" *ngIf="flagProviderWasDeleted">
+              <span class="alert alert-danger text-center w-100"><strong>La subdivisión fue eliminada.</strong>
+              </span>
             </div>
             <!-- save button -->
             <div class="col-12 d-flex justify-content-end"
@@ -86,10 +90,7 @@
                 Guardar
               </button>
             </div>
-            <div class="col-12 mt-3 d-flex justify-content-center" *ngIf="flagProviderWasDeleted">
-              <span class="alert alert-danger text-center w-100"><strong>El usuario fue eliminado.</strong>
-              </span>
-            </div>
+
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { Subdivision } from 'src/app/main/interfaces/classes/subdivision';
 import { ICountry } from 'src/app/main/interfaces/i-country';
 import { ISubdivision } from 'src/app/main/interfaces/i-subdivision';
 import { UIMain } from 'src/app/main/template-main/class/ui-main';
+import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 
 @Component({
@@ -15,17 +16,18 @@ import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 })
 export class SubdivisionBuildComponent extends UIMain implements OnInit {
 
-  @Input() countryReference?= {} as ICountry
+  @Input() countryReferenceId = 0
+  @Input() divisions: ISubdivision[] = []
   @Input() divisionToEdit?= {} as ISubdivision
   @Input() onlyView = false
-  @Output() requestCloseEvent = new EventEmitter()
+  @Output() requestCloseEvent = new EventEmitter<ISubdivision[]>()
 
 
   mainFormGroup = new FormGroup({
     nameFormControl: new FormControl(Validators.required),
     historyFormControl: new FormControl(),
-    geographyCodeFormControl: new FormControl(),
-    otherCodeFormControl: new FormControl(),
+    geographyFormControl: new FormControl(),
+    otherFormControl: new FormControl(),
   })
 
 
@@ -37,10 +39,11 @@ export class SubdivisionBuildComponent extends UIMain implements OnInit {
   flagProviderWasDeleted = false
 
   constructor(
+    _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
   ) {
-    super(router, _snackBar)
+    super(_apiLogin, router, _snackBar)
   }
 
   ngOnInit(): void {
@@ -53,49 +56,35 @@ export class SubdivisionBuildComponent extends UIMain implements OnInit {
   patchValues() {
     this.mainFormGroup.controls['nameFormControl'].patchValue(this.division.name)
     this.mainFormGroup.controls['historyFormControl'].patchValue(this.division.history)
-    this.mainFormGroup.controls['geographyCodeFormControl'].patchValue(this.division.geography)
-    this.mainFormGroup.controls['otherCodeFormControl'].patchValue(this.division.other)
+    this.mainFormGroup.controls['geographyFormControl'].patchValue(this.division.geography)
+    this.mainFormGroup.controls['otherFormControl'].patchValue(this.division.other)
     if (this.divisionToEdit != undefined) {
       this.divisionId = this.divisionToEdit?.id
     }
   }
 
   save() {
+    if (!this.mainFormGroup.valid) { return }
     let name: string = this.mainFormGroup.controls['nameFormControl'].value
     let history: string = this.mainFormGroup.controls['historyFormControl'].value
-    let geography: string = this.mainFormGroup.controls['geographyCodeFormControl'].value
-    let other: string = this.mainFormGroup.controls['otherCodeFormControl'].value
+    let geography: string = this.mainFormGroup.controls['geographyFormControl'].value
+    let other: string = this.mainFormGroup.controls['otherFormControl'].value
 
-    this.division = new Subdivision(this.divisionId, this.countryReference!.id, name, history, geography, other)
-    LocalStoreTools.saveList("subdivision", this.division)
-    this.requestCloseEvent.emit()
-    // this._api.usuariosAddUpdate(division).subscribe(res => {
-    //   if (res.exito) {
-    //     this.openSnackBar("Formulario guardado", "exito")
-    //     this.gotoBack()
-    //   } else {
-    //     this.openSnackBar(res.data, "ERROR")
-    //   }
-    // })
+    this.division = new Subdivision(this.divisionId, this.countryReferenceId, name, history, geography, other)
+
+    if (!this.divisions) { this.divisions = [] }
+    this.divisions.push(this.division)
+    this.requestCloseEvent.emit(this.divisions)
   }
 
-  deleteThisProvider() {
-    if (this.division.id == undefined) {
-      return
-    }
-    if (this.division?.id < 1) {
-      return
-    }
-    // this._api.usuarioDelete(this.division.id).subscribe(res => {
-    //   if (res.exito) {
-    //     this.flagProviderWasDeleted = true
-    //   }
-    // })
+  deleteDivision() {
+    this.divisions = this.divisions.filter(f => f != this.division)
+    this.requestCloseEvent.emit(this.divisions)
   }
 
 
   gotoBack() {
-    this.requestCloseEvent.emit(true);
+    this.requestCloseEvent.emit(this.divisions);
   }
 
 }

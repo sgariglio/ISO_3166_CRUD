@@ -32,6 +32,7 @@ import { CountryListComponent } from './main/crud/country-list/country-list.comp
 import { CountryBuildComponent } from './main/crud/country-list/country-build/country-build.component';
 import { SubdivisionListComponent } from './main/crud/subdivision-list/subdivision-list.component';
 import { SubdivisionBuildComponent } from './main/crud/subdivision-list/subdivision-build/subdivision-build.component';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { SubdivisionBuildComponent } from './main/crud/subdivision-list/subdivis
     CountryBuildComponent,
     SubdivisionListComponent,
     SubdivisionBuildComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

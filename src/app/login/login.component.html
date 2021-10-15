@@ -1,0 +1,47 @@
+<div class="row row-cover-screen h-100">
+  <div class="col-12 d-flex align-items-center  justify-content-center">
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center align-items-end">
+        <img src="../../assets/images/logo_short.png" class="logo">
+        <span class="ps-3">
+          <div class="col-12 d-flex justify-content-center align-items-center">
+            <span class="brand pt-3 mb-2">TSC</span>
+          </div>
+          <div class="col-12 mt-1 d-flex justify-content-center align-items-center">
+            <span class="eslogan">ISO 3166-1</span>
+          </div>
+        </span>
+      </div>
+      <div class="col-12 mt-3 d-flex justify-content-center align-items-center">
+        <div class="card login-form">
+          <div class="card-header">
+            <h3 class="mb-0 pb-0">Bienvenido</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <input type="text" (change)="doLogin()" [(ngModel)]="email" class="form-control w-100"
+                  placeholder="Usuario...">
+              </div>
+              <div class="col-12 mt-1">
+                <input type="password" (change)="doLogin()" [(ngModel)]="password" class="form-control w-100"
+                  placeholder="Contraseña...">
+              </div>
+              <div class="col-12 mt-1 d-flex justify-content-end">
+                <div class="spinner-border" role="status" *ngIf="loginInProgress">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <button (click)="doLogin()" mat-raised-button color="" *ngIf="!loginInProgress">
+                  <mat-icon>login</mat-icon>
+                  Login
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--  <div class="card-footer"></div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

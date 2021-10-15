@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { ApiLoginService } from 'src/app/services/api-login.service';
 import { UIMain } from './class/ui-main';
 
 @Component({
@@ -16,10 +17,11 @@ export class TemplateOperacionesComponent extends UIMain implements OnInit {
   usuarioCaption: string = "";
 
   constructor(
+    _login: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
   ) {
-    super(router, _snackBar)
+    super(_login, router, _snackBar)
   }
 
   ngOnInit(): void {
@@ -41,7 +43,7 @@ export class TemplateOperacionesComponent extends UIMain implements OnInit {
   }
 
   setUserCaption() {
-    //No users for this app.
+    //No users for this TSC app.
     this.usuarioCaption = "TSC"
   }
 

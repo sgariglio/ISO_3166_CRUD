@@ -1,10 +1,13 @@
 import { ICountry } from "../i-country";
+import { ISubdivision } from "../i-subdivision";
 
 export class Country implements ICountry {
   id: number;
   name: string;
   alpha2Code: string;
   numericCode: string;
+
+  divisions: ISubdivision[] = [];
 
   constructor(
     id: number,

@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 import { Country } from '../../interfaces/classes/country';
 import { ICountry } from '../../interfaces/i-country';
@@ -30,22 +31,29 @@ export class CountryListComponent extends UIMain implements OnInit, AfterViewIni
   countries: ICountry[] = [];
 
   constructor(
+    _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
   ) {
-    super(router, _snackBar)
+    super(_apiLogin, router, _snackBar)
   }
 
   ngAfterViewInit() {
     this.dataSourceItems.sort = this.sort!;
   }
   ngOnInit(): void {
+    this.userLoggedCheck()
     this.tableLoad()
+
+    this.countryEdit = this.countries[0]
+    this.selection.toggle(this.countryEdit);
+    this.onlyView = false
   }
 
   tableLoad() {
     this.countries = LocalStoreTools.readList("countries", Country)
     this.dataSourceItems.data = this.countries;
+
     // this._apICountry.getClientList(this.ownerId).subscribe(res => {
     //   if (res.exito) {
     //     this.clientes = res.data

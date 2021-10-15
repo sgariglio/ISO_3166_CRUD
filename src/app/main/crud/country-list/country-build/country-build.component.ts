@@ -4,7 +4,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Country } from 'src/app/main/interfaces/classes/country';
 import { ICountry } from 'src/app/main/interfaces/i-country';
+import { ISubdivision } from 'src/app/main/interfaces/i-subdivision';
 import { UIMain } from 'src/app/main/template-main/class/ui-main';
+import { ApiLoginService } from 'src/app/services/api-login.service';
 import { LocalStoreTools } from 'src/app/shared/tools/local-store-tools';
 
 @Component({
@@ -18,7 +20,9 @@ export class CountryBuildComponent extends UIMain implements OnInit {
   @Input() countryList?: ICountry[] = []
   @Input() onlyView = false
   @Output() requestCloseEvent = new EventEmitter<boolean>()
-  flagSavedSuccess = false
+
+  //SUBDIVISION
+  divisionReference?= {} as ISubdivision
 
   mainFormGroup = new FormGroup({
     nameFormControl: new FormControl(Validators.required),
@@ -34,13 +38,17 @@ export class CountryBuildComponent extends UIMain implements OnInit {
   flagRequestDeleteScreen = false
   flagProviderWasDeleted = false
   //sub screen
-  flagDivisionBuildRequest: boolean = false;
+  flagDivisionBuildRequest: boolean = false
+  flagDivisionOnlyView: boolean = false
+  //save
+  flagSavedSuccess = false
 
   constructor(
+    _apiLogin: ApiLoginService,
     public router: Router,
     _snackBar: MatSnackBar,
   ) {
-    super(router, _snackBar)
+    super(_apiLogin, router, _snackBar)
   }
 
   ngOnInit(): void {
@@ -49,9 +57,11 @@ export class CountryBuildComponent extends UIMain implements OnInit {
       this.patchValues()
     }
     if (this.onlyView) {
-      console.log("disabled")
       this.mainFormGroup.disable()
     }
+
+    console.log(this.country.divisions);
+
   }
 
   patchValues() {
@@ -62,8 +72,6 @@ export class CountryBuildComponent extends UIMain implements OnInit {
       this.countryId = this.countryToEdit?.id
     }
   }
-
-  prefixBuild() { }
 
 
   save() {
@@ -107,7 +115,18 @@ export class CountryBuildComponent extends UIMain implements OnInit {
 
   //SUBDIVISION
   gotoDivisionBuild() { this.flagDivisionBuildRequest = true }
-  divisionRequestClose() { this.flagDivisionBuildRequest = false }
+  divisionRequestClose(divisionsUpdated: ISubdivision[]) {
+    this.country.divisions = divisionsUpdated
+    this.flagDivisionBuildRequest = false
+  }
+  divisionView(division: ISubdivision) {
+    this.divisionReference = division
+    this.flagDivisionBuildRequest = true
+  }
+  divisionEdit(division: ISubdivision) {
+    this.divisionReference = division
+    this.flagDivisionBuildRequest = true
+  }
 
   formReset() {
     this.flagSavedSuccess = false

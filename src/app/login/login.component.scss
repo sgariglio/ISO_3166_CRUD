@@ -1,0 +1,56 @@
+.logo {
+  max-width: 60px;
+}
+
+.brand {
+  font-family: 'Roboto';
+  font-size: 38px;
+}
+
+.eslogan {
+  font-family: 'Lato';
+  font-weight: 300;
+  font-size: 22px;
+}
+
+
+.row-cover-screen {
+  background: #01adb3;
+}
+
+.login-image {
+  background: url("../../assets/images/logo_short.png") no-repeat center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-size: 100% 100%;
+  min-width: 650px;
+  min-height: 500px;
+  opacity: .6;
+}
+
+.login-form {
+  opacity: .8;
+  max-width: 400px;
+  background: rgba(25, 25, 25, .5);
+}
+
+//CARD
+.card {
+  color: blanchedalmond;
+  border: #424242 1px solid;
+}
+
+.card-header {
+  background-color: rgb(28, 34, 44);
+  background-color: #353535;
+}
+
+.card-header h2 {
+  color: #C7C7C7;
+}
+
+.card-body {
+  background-color: #424242;
+}
